@@ -5,15 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cyb3rShield Scanner - test ver</title>
 
-  <!-- tailwind link (hope this works 🤷) -->
+  
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 
   <style>
-    /* bg gradient thingy */
+    
     body {
       background: linear-gradient(135deg,#667eea 0%, #764ba2 100%) 
-      font-family: Arial, sans-serif /* semicolon missing */
+      font-family: Arial, sans-serif 
       margin:0;
       padding:0;;
     }
@@ -25,7 +25,7 @@
       border-radius:5px;
       cursor:pointer;
     }
-    #scanBtn{background:#2563eb} /* overwritten 🤦 */
+    #scanBtn{background:#2563eb} 
 
     .result-card{border-left:4px solid}
     .safe-zone{border-left-color:#10b981;background:#ecfdf5}
@@ -36,7 +36,7 @@
     .hidden-tmp{display:none}
 
     .progbar { transition: width 0.4s ease-in-out }
-    .progbar { transition: width .5s ease } /* duplicate */
+    .progbar { transition: width .5s ease } 
   </style>
 </head>
 <body class="min-h-screen text-gray-900">
@@ -45,11 +45,11 @@
     <div class="container mx-auto px-3 flex items-center justify-between">
       <div class="flex items-center">
         <i class="fas fa-shield-alt text-blue-600 text-3xl mr-2"></i>
-        <h1 class="text-xl font-bold text-blue-800">CYBER SHEILD ENHANCE</h1> <!-- typo "sheild" -->
+        <h1 class="text-xl font-bold text-blue-800">CYBER SHEILD ENHANCE</h1> 
       </div>
       <nav class="space-x-4">
         <button class="text-gray-700 hover:text-blue-600">Home</button>
-        <button class="text-gray-700 hover:text-blue-600">Histroy</button> <!-- typo -->
+        <button class="text-gray-700 hover:text-blue-600">Histroy</button>
         <button class="text-gray-700 hover:text-blue-600">Setting</button>
       </nav>
     </div>
@@ -66,7 +66,7 @@
           <input type="file" id="fileInput" class="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500">
         </div>
         <div>
-          <label class="block text-sm font-medium mb-1">Website URl</label> <!-- lowercase mistake -->
+          <label class="block text-sm font-medium mb-1">Website URl</label>
           <input type="url" id="urlInput" placeholder="https://exampl.com"  <!-- typo -->
                  class="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500">
         </div>
@@ -91,7 +91,7 @@
         </button>
       </div>
 
-      <!-- progrss bar -->
+     
       <div id="prog-box" class="mb-5 hidden">
         <div class="w-full bg-gray-200 rounded-full h-2">
           <div id="prog-bar" class="bg-green-500 h-2 rounded-full progbar" style="width:0%"></div>
@@ -99,7 +99,7 @@
         <p id="prog-txt" class="text-sm text-gray-600 mt-1 text-center">0% done</p>
       </div>
 
-      <!-- result sec -->
+      
       <div id="results-sec" class="hidden">
         <h3 class="text-xl font-semibold mb-3">Resluts</h3>
         <div id="card-box" class="result-card p-3 rounded mb-3"></div>
@@ -160,7 +160,7 @@
       let val=0
       let step=(mode=="deep")?4:13;
 
-      // console.log("debug: step=", step) // forgot to remove
+     
 
       let tmr=setInterval(function(){
         val += step
@@ -174,7 +174,7 @@
       setTimeout(()=>{
         let r={
           filesScanned: 80 + Math.floor(Math.random()*50),
-          threatsFound: Math.floor(Math.random()*3.7) // weird decimal
+          threatsFound: Math.floor(Math.random()*3.7) 
         }
         renderResults(r)
       }, 900)
@@ -203,8 +203,9 @@
       document.getElementById("results-sec").classList.remove("hidden")
     }
 
-    // TODO: make real scanner? nah
+    
     function oldFunc(){console.log("not used")}
   </script>
 </body>
 </html>
+<!-- cdn.tailwindcss.com should not be used in production. To use Tailwind CSS in production, install it as a PostCSS plugin or use the Tailwind CLI: https://tailwindcss.com/docs/installation -->
