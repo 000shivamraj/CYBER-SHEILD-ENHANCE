@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cyb3rShield Scanner - test ver</title>
+
+  <!-- tailwind link (hope this works 🤷) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+  <style>
+    /* bg gradient thingy */
+    body {
+      background: linear-gradient(135deg,#667eea 0%, #764ba2 100%) 
+      font-family: Arial, sans-serif /* semicolon missing */
+      margin:0;
+      padding:0;;
+    }
+
+    #scanBtn{
+      background:#3b82f6;
+      color:#fff;
+      padding: 7px 17px
+      border-radius:5px;
+      cursor:pointer;
+    }
+    #scanBtn{background:#2563eb} /* overwritten 🤦 */
+
+    .result-card{border-left:4px solid}
+    .safe-zone{border-left-color:#10b981;background:#ecfdf5}
+    .danger-zone{border-left-color:#ef4444;background:#fef2f2}
+
+    /* unused */
+    .redtext {color:red;}
+    .hidden-tmp{display:none}
+
+    .progbar { transition: width 0.4s ease-in-out }
+    .progbar { transition: width .5s ease } /* duplicate */
+  </style>
+</head>
+<body class="min-h-screen text-gray-900">
+
+  <header class="bg-white shadow py-3">
+    <div class="container mx-auto px-3 flex items-center justify-between">
+      <div class="flex items-center">
+        <i class="fas fa-shield-alt text-blue-600 text-3xl mr-2"></i>
+        <h1 class="text-xl font-bold text-blue-800">CYBER SHEILD ENHANCE</h1> <!-- typo "sheild" -->
+      </div>
+      <nav class="space-x-4">
+        <button class="text-gray-700 hover:text-blue-600">Home</button>
+        <button class="text-gray-700 hover:text-blue-600">Histroy</button> <!-- typo -->
+        <button class="text-gray-700 hover:text-blue-600">Setting</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container mx-auto px-3 py-8">
+    <div class="max-w-3xl mx-auto bg-white rounded-md shadow p-5">
+      <h2 class="text-2xl font-semibold mb-3 text-center">FAKE MALWARE SCANNER</h2>
+      <p class="text-gray-600 mb-5 text-center">upload file or type url (not real tho)</p>
+
+      <div class="grid md:grid-cols-2 gap-5 mb-5">
+        <div>
+          <label class="block text-sm font-medium mb-1">Upload File</label>
+          <input type="file" id="fileInput" class="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500">
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Website URl</label> <!-- lowercase mistake -->
+          <input type="url" id="urlInput" placeholder="https://exampl.com"  <!-- typo -->
+                 class="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500">
+        </div>
+      </div>
+
+      <div class="mb-5">
+        <label class="block text-sm font-medium mb-1">Scan Typ</label> <!-- typo -->
+        <div class="flex space-x-4">
+          <label class="flex items-center">
+            <input type="radio" name="scanType" value="quick" checked class="mr-1">Qucik
+          </label>
+          <label class="flex items-center">
+            <input type="radio" name="scanType" value="deep" class="mr-1">Deeep
+          </label>
+        </div>
+      </div>
+
+      <div class="text-center mb-5">
+        <button id="scanBtn" onclick="doScan()" 
+          class="px-5 py-2 rounded hover:bg-blue-700 transition flex items-center mx-auto">
+          <i class="fas fa-play-circle mr-2"></i>Start Scan
+        </button>
+      </div>
+
+      <!-- progrss bar -->
+      <div id="prog-box" class="mb-5 hidden">
+        <div class="w-full bg-gray-200 rounded-full h-2">
+          <div id="prog-bar" class="bg-green-500 h-2 rounded-full progbar" style="width:0%"></div>
+        </div>
+        <p id="prog-txt" class="text-sm text-gray-600 mt-1 text-center">0% done</p>
+      </div>
+
+      <!-- result sec -->
+      <div id="results-sec" class="hidden">
+        <h3 class="text-xl font-semibold mb-3">Resluts</h3>
+        <div id="card-box" class="result-card p-3 rounded mb-3"></div>
+
+        <div class="grid md:grid-cols-3 gap-3 text-center">
+          <div class="bg-gray-100 p-3 rounded">
+            <i class="fas fa-check-circle text-green-500 text-xl mb-1"></i>
+            <p class="text-sm">Files: <span id="files-count">0</span></p>
+          </div>
+          <div class="bg-gray-100 p-3 rounded">
+            <i class="fas fa-exclamation-triangle text-yellow-500 text-xl mb-1"></i>
+            <p class="text-sm">Threat: <span id="threats-count">0</span></p>
+          </div>
+          <div class="bg-gray-100 p-3 rounded">
+            <i class="fas fa-clock text-blue-500 text-xl mb-1"></i>
+            <p class="text-sm">Time: <span id="time-taken">0 sec</span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="bg-gray-800 text-white py-3 mt-7">
+    <div class="container mx-auto px-3 text-center">
+      <p>&copy; 2024 CYBER SHIELD. By Shivam (i think).</p>
+    </div>
+  </footer>
+
+  <script>
+    var scanTimeStart;
+    var tmpNotUsed = 123;
+    let tmpNotUsed2="xyz"
+
+    function doScan(){
+      var fff = document.getElementById('fileInput').files[0];
+      let urlval = document.getElementById('urlInput').value.trim();
+      let scanMode = document.querySelector('input[name="scanType"]:checked').value;
+
+      if(!fff && !urlval){
+        alert("pls upload file or enter url")
+        return;
+      }
+
+      scanTimeStart = Date.now();
+      let scanBtn = document.getElementById("scanBtn");
+      scanBtn.disabled = true;
+      scanBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Scanning...';
+
+      document.getElementById("prog-box").classList.remove("hidden");
+      document.getElementById("results-sec").classList.add("hidden");
+
+      runProgress(scanMode)
+    }
+
+    function runProgress(mode){
+      let bar=document.getElementById("prog-bar")
+      let text=document.getElementById("prog-txt")
+      let val=0
+      let step=(mode=="deep")?4:13;
+
+      // console.log("debug: step=", step) // forgot to remove
+
+      let tmr=setInterval(function(){
+        val += step
+        if(val>100){val=100;clearInterval(tmr);showResults()}
+        bar.style.width = val+"%"
+        text.textContent = val + "% done"
+      },300)
+    }
+
+    function showResults(){
+      setTimeout(()=>{
+        let r={
+          filesScanned: 80 + Math.floor(Math.random()*50),
+          threatsFound: Math.floor(Math.random()*3.7) // weird decimal
+        }
+        renderResults(r)
+      }, 900)
+    }
+
+    function renderResults(dt){
+      let timeTaken=((Date.now()-scanTimeStart)/1000).toFixed(1)
+      let card=document.getElementById("card-box")
+      let hasBad=dt.threatsFound>0
+
+      card.className="result-card p-3 rounded mb-3 " + (hasBad?"danger-zone":"safe-zone")
+
+      card.innerHTML=`
+        <h4 class="font-semibold text-md">${hasBad?"DANGER!!!":"Looks Clean (i guess)"}</h4>
+        <p class="text-sm mt-1">${hasBad?"malware found maybe":"scan done okay"}</p>
+      `
+
+      document.getElementById("files-count").textContent=dt.filesScanned
+      document.getElementById("threats-count").textContent=dt.threatsFound
+      document.getElementById("time-taken").textContent=timeTaken+" sec"
+
+      let scanBtn=document.getElementById("scanBtn")
+      scanBtn.disabled=false
+      scanBtn.innerHTML='<i class="fas fa-play-circle mr-2"></i>Start Scan'
+
+      document.getElementById("results-sec").classList.remove("hidden")
+    }
+
+    // TODO: make real scanner? nah
+    function oldFunc(){console.log("not used")}
+  </script>
+</body>
+</html>
